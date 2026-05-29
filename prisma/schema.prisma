@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionStatus {
+  SUCCESS
+  FAILED
+}
+
+model Transaction {
+  id         Int      @id @default(autoincrement())
+
+  senderId   Int
+  receiverId Int
+
+  amount     Decimal  @db.Decimal(15,2)
+
+  status     TransactionStatus
+
+  sender User @relation(
+    "sender",
+    fields: [senderId],
+    references: [id]
+  )
+
+  receiver User @relation(
+    "receiver",
+    fields: [receiverId],
+    references: [id]
+  )
+
+  createdAt DateTime @default(now())
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+
+  wallet Wallet?
+
+  sentTransactions     Transaction[] @relation("sender")
+  receivedTransactions Transaction[] @relation("receiver")
+
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+model Wallet {
+  id       Int      @id @default(autoincrement())
+  userId   Int      @unique
+  balance  Decimal  @default(0.00) @db.Decimal(15,2)
+
+  user User @relation(fields: [userId], references: [id])
+
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  amount     Decimal  @db.Decimal(15,2)
+  status     TransactionStatus
+
+  sender   User @relation("sender", fields: [senderId], references: [id])
+  receiver User @relation("receiver", fields: [receiverId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
