@@ -31,7 +31,11 @@ server.listen(
   PORT,
   () => {
     console.log(
-      `Server running on port ${PORT}`
+      `Server running at http://localhost:${PORT}`
+    );
+
+    console.log(
+      `Swagger Docs: http://localhost:${PORT}/api-docs`
     );
   }
 );

@@ -167,6 +167,14 @@ The Swagger interface can be used to:
 * Verify request and response formats
 
 ---
+# Prerequisites
+
+Before running the application, ensure the following are installed:
+
+* Node.js (v18 or higher)
+* PostgreSQL database (local PostgreSQL or Neon)
+
+The application requires a valid PostgreSQL connection string configured in the `.env` file.
 
 # Setup Instructions
 
@@ -263,6 +271,7 @@ http://localhost:3000
 
 ---
 
+
 # Additional Documentation
 
 ## Database Schema
@@ -283,6 +292,11 @@ docs/sql-queries.md
 docs/api-gateway.md
 ```
 
+# Evaluation Note
+
+The application requires a PostgreSQL database connection.
+
+For ease of evaluation, a temporary database connection string can be provided separately upon request so the application can be tested immediately without setting up a new PostgreSQL instance.
 
 
 # Author
