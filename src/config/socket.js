@@ -6,46 +6,61 @@ const initSocket = (socketIo) => {
 
   io = socketIo;
 
-  io.on("connection", (socket) => {
+  io.on(
+    "connection",
+    (socket) => {
 
-    console.log(
-      "User connected:",
-      socket.id
-    );
+      console.log(
+        "User connected:",
+        socket.id
+      );
 
-    socket.on(
-      "register",
-      (userId) => {
+      socket.on(
+        "register",
+        (userId) => {
 
-        users[userId] = socket.id;
+          users[userId] =
+            socket.id;
 
-        console.log(
-          `User ${userId} registered`
-        );
+          console.log(
+            `User ${userId} registered with socket ${socket.id}`
+          );
 
-      }
-    );
+        }
+      );
 
-    socket.on(
-      "disconnect",
-      () => {
+      socket.on(
+        "disconnect",
+        () => {
 
-        Object.keys(users)
-          .forEach((userId) => {
+          Object.keys(users)
+            .forEach((userId) => {
 
-            if (
-              users[userId]
-              === socket.id
-            ) {
-              delete users[userId];
-            }
+              if (
+                users[userId]
+                === socket.id
+              ) {
 
-          });
+                delete users[userId];
 
-      }
-    );
+                console.log(
+                  `User ${userId} disconnected`
+                );
 
-  });
+              }
+
+            });
+
+          console.log(
+            "Socket disconnected:",
+            socket.id
+          );
+
+        }
+      );
+
+    }
+  );
 
 };
 
@@ -58,15 +73,36 @@ const sendTransactionNotification =
   const socketId =
     users[userId];
 
+  console.log(
+    "Attempting notification",
+    {
+      userId,
+      socketId,
+      payload
+    }
+  );
+
   if (
     socketId &&
     io
   ) {
+
     io.to(socketId)
       .emit(
         "transaction",
         payload
       );
+
+    console.log(
+      `Notification sent to user ${userId}`
+    );
+
+  } else {
+
+    console.log(
+      `User ${userId} is not connected`
+    );
+
   }
 
 };
